@@ -7,3 +7,4 @@
 #### Data source: 
 * User Twitter Search API to fetch the tweets containing #reopen
 #### Screenshots
+<img src='images/twitter_finder.png'>
