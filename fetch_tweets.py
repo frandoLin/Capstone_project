@@ -32,7 +32,8 @@ class SearchTweets:
     
     def fetch_tweets(self):
         
-        file = open(f"twitter_{self.hashtags}.txt", "w")
+        file_name = f"twitter_{self.hashtags}.txt".replace(' OR ', '_')
+        file = open(file_name, "w")
         
         #While Filter API can fetch streaming data, Search API is a more efficient way for my project 
         # Search the matched tweets within the recent 7 days
@@ -48,7 +49,8 @@ class SearchTweets:
                 tweet = status._json
                 file.write(json.dumps(tweet) + '\n')
 
-        file.close() 
+        file.close()
+        print(f"Saved the tweets to {file_name}")
 
 
 
