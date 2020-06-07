@@ -12,6 +12,30 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
     <title>Twitter Friends Finder</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+
+      $('form').on('submit', function(event) {
+
+          $.ajax({
+              data : {name : $('#nameInput').val()},
+              type : 'POST',
+              url : '/tweets',
+              success: function(response) {
+                $("#place_for_tweets").html(response);
+              },
+              error: function(xhr, status, error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText
+                alert('Error - ' + errorMessage);
+              }
+          });
+		  
+		  event.preventDefault();
+      });
+
+    });
+    </script>   
   </head>
   <body>
     <div class="container">
@@ -25,40 +49,22 @@
             <small class="text-muted">
               Matching based on the sentiments on #reopen and the similarities of the 10 most recent tweets in their timeline 
             </small>
-			<p class="card-text">
-			  The example I've used to fetch relevant data so far: #reopen is not smart 
-			</p>
+            <p class="card-text">
+              The example I've used to fetch relevant data so far: #reopen is not smart 
+            </p>
           </h4>
         </div>
       </div>
-
-      {% for tweet in tweets %}
-        <div class="row my-4">
-          <div class="col">
-            <div class="card {{ 'positive' if tweet.data.diff_sentiment_score > 0 }} {{ 'negative' if tweet.data.diff_sentiment_score < 0 }}">
-              <div class="card-body">
-                <p class="card-text">
-                  {{ tweet.filtered_text()|safe }}
-                </p>
-				<p class="card-text">
-				  Sentiment&nbsp;Score:&nbsp;{{ tweet.data.sentiment_score }}
-				</p>
-				<p class="card-text">
-				  Cluster:&nbsp;{{ tweet.data.topic }}
-				</p>
-				<p class="card-text">
-				  Key&nbsp;words&nbsp;for&nbsp;the&nbsp;10&nbsp;recent&nbsp;tweets:&nbsp;{{tweet.data.key_words}}
-				</p>
-                <br />
-                <div class="card-text">
-                  <img alt="{{ tweet.data.username }}" height="48" src="{{ tweet.data.profile_image_url }}" width="48" class="mr-3"/>
-                  {{tweet.data.name}}(<a href="{{ tweet.user_link() }}" target="_blank">{{ tweet.data.username }}</a>)
-                </div>
-              </div>
-            </div>
-          </div>
+      <form style="text-align:center;">
+        <div style="text-align:center;">
+          <label class="sr-only" for="nameInput">Name</label>
+          <input type="text" class="form-control" id="nameInput" placeholder="My sentiment" style="text-align:center;">
         </div>
-      {% endfor %}
+		<br>
+        <button type="submit" class="btn btn-default" style="text-align:center;">Match</button>
+      </form>
+      <br>
+      <div id="place_for_tweets"></div>
 
       <div class="text-center mb-4">
         <a class="btn btn-primary" href="/" role="button">Refresh</a>
@@ -68,3 +74,4 @@
     </div>
   </body>
 </html>
+
